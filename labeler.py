@@ -1467,7 +1467,6 @@ class YOLOLabeler(QMainWindow):
         image_name = os.path.basename(image_path)
         txt_name = os.path.splitext(image_name)[0] + ".txt"
         txt_path = os.path.join(self.images_dir, txt_name)
-
         try:
             # --- Predict based on mode ---
             # Note: Ultralytics YOLOv8 'detect' task produces boxes.
@@ -1475,13 +1474,19 @@ class YOLOLabeler(QMainWindow):
             # There is no standard 'obb' task in YOLOv8 as of my knowledge cutoff.
             # We will use 'detect' for Box mode and 'segment' for Poly mode.
             results = self.model(image, conf=0.001)
-
             with open(txt_path, 'w') as f:
                 if results and len(results) > 0:
                     img_h, img_w, _ = image.shape
-
                     # --- Handle different result types ---
-                    if results[0].masks is not None:
+                    if results[0].obb is not None:
+                        for rect,conf,cls in zip(results[0].obb.xyxyxyxy,results[0].obb.conf,results[0].obb.cls):
+                            # Create Box object
+                            points_list = [(float(p[0]), float(p[1])) for p in rect]
+                            poly_obj = Box(MODE_POLY, int(cls), float(conf), points_list)
+                            yolo_line = poly_obj.to_yolo_format(img_w, img_h)
+                            if yolo_line:
+                                f.write(yolo_line + "\n")
+                    elif results[0].masks is not None:
                         masks = results[0].masks.xy # Get segmentation polygons (list of np arrays)
                         boxes = results[0].boxes # Get corresponding boxes for class/conf
                         # It's possible that masks.xy and boxes don't align perfectly,
@@ -1509,11 +1514,8 @@ class YOLOLabeler(QMainWindow):
                             yolo_line = box_obj.to_yolo_format(img_w, img_h)
                             if yolo_line:
                                 f.write(yolo_line + "\n")
-
-
         except Exception as e:
             print(f"Error creating annotations file {txt_path}: {e}")
-
         item = self.image_list.item(self.current_idx)
         item.setBackground(QColor(255, 255, 144))
 
