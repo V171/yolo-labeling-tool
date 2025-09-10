@@ -1,55 +1,136 @@
 [UI]
-Open Folder = フォルダを開く
-⏮️ First (Home) = ⏮️ 最初 (Home)
-⏪ -10 (PgDn) = ⏪ -10 (PgDn)
-◀ Previous (←) = ◀ 前 (←)
-Next (→) ▶ = 次 (→) ▶
-+10 (PgUp) ⏩ = +10 (PgUp) ⏩
-Last (End) ⏭️ = 最後 (End) ⏭️
-Random (Z) = ランダム (Z)
-Reset Annotations (R) = アノテーションをリセット (R)
-Save to Train (N) = Trainに保存 (N)
-Hide Annotations (H) = アノテーションを非表示 (H)
-Show Annotations (H) = アノテーションを表示 (H)
-Numbers (C) = 番号 (C)
-Names (C) = 名前 (C)
-Reset View (V) = ビューをリセット (V)
-Threshold: = しきい値:
-Image List = 画像リスト
-Classes = クラス
-Show/Hide List = リストを表示/非表示
-Show Classes = クラスを表示
-Manage Classes = クラスの管理
-Language = 言語
-Add Box = ボックスを追加
-Delete Box = ボックスを削除
-Change Class = クラスを変更
-Resize = サイズ変更
-Class Manager = クラスマネージャー
-Add = 追加
-Remove = 削除
-Rename = 名前変更
-Reset from Model = モデルからリセット
-OK = OK
-Cancel = キャンセル
-Add Class = クラスを追加
-Enter class name: = クラス名を入力:
-Confirm = 確認
-Are you sure you want to remove class {name} (ID: {id})? = クラス{name} (ID: {id})を削除してもよろしいですか？
-Rename Class = クラス名を変更
-Enter new class name: = 新しいクラス名を入力:
-Are you sure you want to reset classes from the model? All custom changes will be lost. = モデルからクラスをリセットしてもよろしいですか？カスタム変更はすべて失われます。
-Error = エラー
-Could not load model: {error} = モデルをロードできませんでした: {error}
-Warning = 警告
-No images in folder = フォルダに画像がありません
-Could not load image: {path} = 画像をロードできませんでした: {path}
-Error reading annotation file {path}: {error} = アノテーションファイル {path} の読み取りエラー: {error}
-Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} = 画像: {current}/{total} | ボックス: {visible} (合計: {total_boxes}) | 選択中: {selected_info}
-None = なし
-Unknown = 不明
-Model loaded: {path} = モデルがロードされました: {path}
-Box [{x1},{y1},{x2},{y2}] Class: {cls} ({cls_name}) Conf: {conf:.2f} = {cls} ({cls_name}) [{x1},{y1},{x2},{y2}] {conf:.2f}
-YOLO Labeling Tool = YOLOラベリングツール
-Enter new class: = 新しいクラスを入力:
-Enter new size: = 新しいサイズを入力:
+# --- メインウィンドウタイトル ---
+YOLO Labeling Tool=YOLOラベリングツール
+
+# --- ファイルメニュー ---
+File=ファイル
+Select Model...=モデルを選択...
+Select Images Directory...=画像ディレクトリを選択...
+Select Train Directory...=トレーニングディレクトリを選択...
+Exit=終了
+
+# --- 表示メニュー ---
+View=表示
+Reset View=ビューをリセット
+Show/Hide Image List=画像リストの表示/非表示
+Show/Hide Classes=クラスの表示/非表示
+Show/Hide Evaluation Summary=評価サマリーの表示/非表示
+Show/Hide Error List=エラーリストの表示/非表示
+Show/Hide Annotations=アノテーションの表示/非表示
+Toggle Evaluation Mode=評価モードの切り替え
+
+# --- アクションメニュー ---
+Action=アクション
+Manage Classes...=クラスを管理...
+
+# --- アクションメニュー：モードサブメニュー ---
+Mode=モード
+Box Mode (B)=ボックスモード (B)
+Polygon Mode (P)=ポリゴンモード (P)
+
+# --- アクションメニュー：ナビゲートサブメニュー ---
+Navigate=ナビゲート
+First Image (Home)=最初の画像 (Home)
+Previous Image (←)=前の画像 (←)
+Next Image (→)=次の画像 (→)
+Last Image (End)=最後の画像 (End)
+
+# --- アクションメニュー：アノテーションサブメニュー ---
+Annotations=アノテーション
+Reset Current Annotations (R)=現在のアノテーションをリセット (R)
+
+# --- アクションメニュー：評価サブメニュー ---
+Evaluation=評価
+Set IoU Threshold...=IoUしきい値を設定...
+Evaluate All Images=すべての画像を評価
+
+# --- 言語メニュー ---
+Language=言語
+
+# --- クラスマネージャーダイアログ ---
+Class Manager=クラスマネージャー
+Add=追加
+Remove=削除
+Rename=名前変更
+Pick Color=色を選択
+Reset from Model=モデルからリセット
+OK=OK
+Cancel=キャンセル
+Add Class=クラスを追加
+Enter class name:=クラス名を入力：
+Confirm=確認
+Are you sure you want to remove class {name} (ID: {id})?=クラス {name} (ID: {id}) を削除してもよろしいですか？
+Rename Class=クラス名を変更
+Enter new class name:=新しいクラス名を入力：
+No Selection=選択されていません
+Please select a class first.=まずクラスを選択してください。
+Error=エラー
+Invalid class item format.=無効なクラス項目形式です。
+Are you sure you want to reset classes from the model? All custom changes will be lost.=モデルからクラスをリセットしてもよろしいですか？すべてのカスタム変更は失われます。
+
+# --- メインツールバーボタン ---
+⏮ First (Home)=⏮ 最初 (Home)
+⏪ -10 (PgDn)=⏪ -10 (PgDn)
+◀ Previous (←)=◀ 前へ (←)
+Next (→) ▶=次へ (→) ▶
++10 (PgUp) ⏩=+10 (PgUp) ⏩
+Last (End) ⏭=最後 (End) ⏭
+Random (Z)=ランダム (Z)
+Reset Annotations (R)=アノテーションをリセット (R)
+Save to Train (N)=トレーニング用に保存 (N)
+Hide Annotations (H)=アノテーションを非表示 (H)
+Numbers (C)=番号 (C)
+Reset View (V)=ビューをリセット (V)
+
+# --- ラベルとUIテキスト ---
+Mode:=モード：
+Box=ボックス
+Poly=ポリゴン
+Threshold:=しきい値：
+
+# --- 画像ビューアコンテキストメニュー ---
+Add Annotation=アノテーションを追加
+Delete Annotation=アノテーションを削除
+Change Class=クラスを変更
+
+# --- ステータスバーメッセージ ---
+Model loaded: {path}=モデルを読み込みました：{path}
+Could not load model: {error}=モデルを読み込めませんでした：{error}
+Warning=警告
+No images in folder=フォルダ内に画像がありません
+Error=エラー
+Could not load image: {path}=画像を読み込めませんでした：{path}
+None=なし
+Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}=ボックス [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] クラス：{cls} ({cls_name}) 信頼度：{conf:.2f}
+Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}=ポリゴン ({num_points} 点) {pos}クラス：{cls} ({cls_name}) 信頼度：{conf:.2f}
+ | TP: {tp}, FP: {fp}, FN: {fn}= | TP：{tp}、FP：{fp}、FN：{fn}
+Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}=画像：{current}/{total} | ボックス：{visible} (合計：{total_boxes}) | 選択済み：{selected_info} | モード：{mode}{eval_info}
+No images=画像がありません
+Error parsing annotation line in {path}: {error}={path} 内のアノテーション行の解析エラー：{error}
+Error reading annotation file {path}: {error}=アノテーションファイル {path} の読み込みエラー：{error}
+
+# --- 評価とエラー ---
+Set IoU Threshold=IoUしきい値を設定
+Enter IoU threshold (0.0 - 1.0):=IoUしきい値を入力 (0.0 - 1.0)：
+Evaluation completed.=評価が完了しました。
+Success=成功
+Evaluation of all images completed.=すべての画像の評価が完了しました。
+No evaluation results available.=評価結果が利用できません。
+GT=正解
+TP=真陽性
+FN=偽陰性
+FP=偽陽性
+Precision=適合率
+Recall=再現率
+Total=合計
+False Positive: {cls_name}=偽陽性：{cls_name}
+False Negative: {cls_name}=偽陰性：{cls_name}
+True Positive: {cls_name}=真陽性：{cls_name}
+
+# --- その他UI ---
+Show Classes=クラスを表示
+Show Evaluation Summary=評価サマリーを表示
+Show Errors List=エラーリストを表示
+Not Found=見つかりません
+Image {basename} not found in the current image list.=現在の画像リストに画像 {basename} が見つかりません。
+Failed to load image: {error}=画像の読み込みに失敗しました：{error}

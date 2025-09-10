@@ -1,55 +1,136 @@
 [UI]
-Open Folder = Ouvrir le dossier
-⏮️ First (Home) = ⏮️ Premier (Début)
-⏪ -10 (PgDn) = ⏪ -10 (PgBas)
-◀ Previous (←) = ◀ Précédent (←)
-Next (→) ▶ = Suivant (→) ▶
-+10 (PgUp) ⏩ = +10 (PgHaut) ⏩
-Last (End) ⏭️ = Dernier (Fin) ⏭️
-Random (Z) = Aléatoire (Z)
-Reset Annotations (R) = Réinitialiser les annotations (R)
-Save to Train (N) = Enregistrer dans Train (N)
-Hide Annotations (H) = Masquer les annotations (H)
-Show Annotations (H) = Afficher les annotations (H)
-Numbers (C) = Nombres (C)
-Names (C) = Noms (C)
-Reset View (V) = Réinitialiser la vue (V)
-Threshold: = Seuil:
-Image List = Liste d'images
-Classes = Classes
-Show/Hide List = Afficher/Masquer la liste
-Show Classes = Afficher les classes
-Manage Classes = Gérer les classes
-Language = Langue
-Add Box = Ajouter une boîte
-Delete Box = Supprimer la boîte
-Change Class = Changer de classe
-Resize = Redimensionner
-Class Manager = Gestionnaire de classes
-Add = Ajouter
-Remove = Supprimer
-Rename = Renommer
-Reset from Model = Réinitialiser depuis le modèle
-OK = OK
-Cancel = Annuler
-Add Class = Ajouter une classe
-Enter class name: = Entrez le nom de la classe:
-Confirm = Confirmation
-Are you sure you want to remove class {name} (ID: {id})? = Êtes-vous sûr de vouloir supprimer la classe {name} (ID : {id}) ?
-Rename Class = Renommer la classe
-Enter new class name: = Entrez le nouveau nom de la classe:
-Are you sure you want to reset classes from the model? All custom changes will be lost. = Êtes-vous sûr de vouloir réinitialiser les classes depuis le modèle ? Toutes les modifications personnalisées seront perdues.
-Error = Erreur
-Could not load model: {error} = Impossible de charger le modèle : {error}
-Warning = Avertissement
-No images in folder = Aucune image dans le dossier
-Could not load image: {path} = Impossible de charger l'image : {path}
-Error reading annotation file {path}: {error} = Erreur lors de la lecture du fichier d'annotation {path} : {error}
-Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} = Image : {current}/{total} | Boîtes : {visible} (total : {total_boxes}) | Sélectionné : {selected_info}
-None = Aucun
-Unknown = Inconnu
-Model loaded: {path} = Modèle chargé : {path}
-Box [{x1},{y1},{x2},{y2}] Class: {cls} ({cls_name}) Conf: {conf:.2f} = {cls} ({cls_name}) [{x1},{y1},{x2},{y2}] {conf:.2f}
-YOLO Labeling Tool = Outil d'annotation YOLO
-Enter new class: = Entrez la nouvelle classe:
-Enter new size: = Entrez la nouvelle taille:
+# --- Titre de la fenêtre principale ---
+YOLO Labeling Tool=Outil d'étiquetage YOLO
+
+# --- Menu Fichier ---
+File=Fichier
+Select Model...=Sélectionner le modèle...
+Select Images Directory...=Sélectionner le répertoire d'images...
+Select Train Directory...=Sélectionner le répertoire d'entraînement...
+Exit=Quitter
+
+# --- Menu Affichage ---
+View=Affichage
+Reset View=Réinitialiser la vue
+Show/Hide Image List=Afficher/Masquer la liste d'images
+Show/Hide Classes=Afficher/Masquer les classes
+Show/Hide Evaluation Summary=Afficher/Masquer le résumé d'évaluation
+Show/Hide Error List=Afficher/Masquer la liste d'erreurs
+Show/Hide Annotations=Afficher/Masquer les annotations
+Toggle Evaluation Mode=Basculer le mode évaluation
+
+# --- Menu Action ---
+Action=Action
+Manage Classes...=Gérer les classes...
+
+# --- Menu Action : Sous-menu Mode ---
+Mode=Mode
+Box Mode (B)=Mode Boîte (B)
+Polygon Mode (P)=Mode Polygone (P)
+
+# --- Menu Action : Sous-menu Navigation ---
+Navigate=Naviguer
+First Image (Home)=Première image (Home)
+Previous Image (←)=Image précédente (←)
+Next Image (→)=Image suivante (→)
+Last Image (End)=Dernière image (End)
+
+# --- Menu Action : Sous-menu Annotations ---
+Annotations=Annotations
+Reset Current Annotations (R)=Réinitialiser les annotations actuelles (R)
+
+# --- Menu Action : Sous-menu Évaluation ---
+Evaluation=Évaluation
+Set IoU Threshold...=Définir le seuil IoU...
+Evaluate All Images=Évaluer toutes les images
+
+# --- Menu Langue ---
+Language=Langue
+
+# --- Dialogue de gestion des classes ---
+Class Manager=Gestionnaire de classes
+Add=Ajouter
+Remove=Supprimer
+Rename=Renommer
+Pick Color=Choisir la couleur
+Reset from Model=Réinitialiser à partir du modèle
+OK=OK
+Cancel=Annuler
+Add Class=Ajouter une classe
+Enter class name:=Entrer le nom de la classe :
+Confirm=Confirmer
+Are you sure you want to remove class {name} (ID: {id})?=Êtes-vous sûr de vouloir supprimer la classe {name} (ID : {id}) ?
+Rename Class=Renommer la classe
+Enter new class name:=Entrer le nouveau nom de la classe :
+No Selection=Aucune sélection
+Please select a class first.=Veuillez d'abord sélectionner une classe.
+Error=Erreur
+Invalid class item format.=Format d'élément de classe invalide.
+Are you sure you want to reset classes from the model? All custom changes will be lost.=Êtes-vous sûr de vouloir réinitialiser les classes à partir du modèle ? Toutes les modifications personnalisées seront perdues.
+
+# --- Boutons de la barre d'outils principale ---
+⏮ First (Home)=⏮ Première (Home)
+⏪ -10 (PgDn)=⏪ -10 (PgDn)
+◀ Previous (←)=◀ Précédente (←)
+Next (→) ▶=Suivante (→) ▶
++10 (PgUp) ⏩=+10 (PgUp) ⏩
+Last (End) ⏭=Dernière (End) ⏭
+Random (Z)=Aléatoire (Z)
+Reset Annotations (R)=Réinitialiser les annotations (R)
+Save to Train (N)=Enregistrer pour l'entraînement (N)
+Hide Annotations (H)=Masquer les annotations (H)
+Numbers (C)=Numéros (C)
+Reset View (V)=Réinitialiser la vue (V)
+
+# --- Étiquettes et texte de l'interface ---
+Mode:=Mode :
+Box=Boîte
+Poly=Polygone
+Threshold:=Seuil :
+
+# --- Menu contextuel du visualiseur d'images ---
+Add Annotation=Ajouter une annotation
+Delete Annotation=Supprimer l'annotation
+Change Class=Changer de classe
+
+# --- Messages de la barre d'état ---
+Model loaded: {path}=Modèle chargé : {path}
+Could not load model: {error}=Impossible de charger le modèle : {error}
+Warning=Avertissement
+No images in folder=Aucune image dans le dossier
+Error=Erreur
+Could not load image: {path}=Impossible de charger l'image : {path}
+None=Aucun
+Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}=Boîte [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Classe : {cls} ({cls_name}) Confiance : {conf:.2f}
+Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}=Polygone ({num_points} pts) {pos}Classe : {cls} ({cls_name}) Confiance : {conf:.2f}
+ | TP: {tp}, FP: {fp}, FN: {fn}= | VP : {tp}, FP : {fp}, FN : {fn}
+Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}=Image : {current}/{total} | Boîtes : {visible} (total : {total_boxes}) | Sélectionné : {selected_info} | Mode : {mode}{eval_info}
+No images=Aucune image
+Error parsing annotation line in {path}: {error}=Erreur lors de l'analyse de la ligne d'annotation dans {path} : {error}
+Error reading annotation file {path}: {error}=Erreur lors de la lecture du fichier d'annotation {path} : {error}
+
+# --- Évaluation et erreurs ---
+Set IoU Threshold=Définir le seuil IoU
+Enter IoU threshold (0.0 - 1.0):=Entrer le seuil IoU (0.0 - 1.0) :
+Evaluation completed.=Évaluation terminée.
+Success=Succès
+Evaluation of all images completed.=Évaluation de toutes les images terminée.
+No evaluation results available.=Aucun résultat d'évaluation disponible.
+GT=Vérité Terrain
+TP=Vrai Positif
+FN=Faux Négatif
+FP=Faux Positif
+Precision=Précision
+Recall=Rappel
+Total=Total
+False Positive: {cls_name}=Faux positif : {cls_name}
+False Negative: {cls_name}=Faux négatif : {cls_name}
+True Positive: {cls_name}=Vrai positif : {cls_name}
+
+# --- Interface divers ---
+Show Classes=Afficher les classes
+Show Evaluation Summary=Afficher le résumé d'évaluation
+Show Errors List=Afficher la liste des erreurs
+Not Found=Non trouvé
+Image {basename} not found in the current image list.=L'image {basename} est introuvable dans la liste d'images actuelle.
+Failed to load image: {error}=Échec du chargement de l'image : {error}

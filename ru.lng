@@ -1,55 +1,136 @@
 [UI]
-Open Folder = Открыть папку
-⏮️ First (Home) = ⏮️ Начало (Home)
-⏪ -10 (PgDn) = ⏪ -10 (PgDn)
-◀ Previous (←) = ◀ Предыдущее (←)
-Next (→) ▶ = Следующее (→) ▶
-+10 (PgUp) ⏩ = +10 (PgUp) ⏩
-Last (End) ⏭️ = Конец (End) ⏭️
-Random (Z) = Случайное (Z)
-Reset Annotations (R) = Сбросить разметку (R)
-Save to Train (N) = Сохранить в Train (N)
-Hide Annotations (H) = Скрыть разметку (H)
-Show Annotations (H) = Показать разметку (H)
-Numbers (C) = Номера классов (C)
-Names (C) = Имена классов (C)
-Reset View (V) = Сброс вида (V)
-Threshold: = Порог:
-Image List = Список изображений
-Classes = Классы
-Show/Hide List = Показать/скрыть список
-Show Classes = Показать классы
-Manage Classes = Управление классами
-Language = Язык
-Add Box = Добавить бокс
-Delete Box = Удалить бокс
-Change Class = Изменить класс
-Resize = Изменить размер
-Class Manager = Управление классами
-Add = Добавить
-Remove = Удалить
-Rename = Переименовать
-Reset from Model = Сбросить из модели
-OK = OK
-Cancel = Отмена
-Add Class = Добавить класс
-Enter class name: = Введите имя класса:
-Confirm = Подтверждение
-Are you sure you want to remove class {name} (ID: {id})? = Вы уверены, что хотите удалить класс {name} (ID: {id})?
-Rename Class = Переименовать класс
-Enter new class name: = Введите новое имя класса:
-Are you sure you want to reset classes from the model? All custom changes will be lost. = Вы уверены, что хотите сбросить классы к тем, что есть в модели? Все пользовательские изменения будут потеряны.
-Error = Ошибка
-Could not load model: {error} = Не удалось загрузить модель: {error}
-Warning = Предупреждение
-No images in folder = В папке нет изображений
-Could not load image: {path} = Не удалось загрузить изображение: {path}
-Error reading annotation file {path}: {error} = Ошибка при чтении файла разметки {path}: {error}
-Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} = Изображение: {current}/{total} | Боксов: {visible} (всего: {total_boxes}) | Выбран: {selected_info}
-None = нет
-Unknown = Неизвестно
-Model loaded: {path} = Модель загружена: {path}
-Box [{x1},{y1},{x2},{y2}] Class: {cls} ({cls_name}) Conf: {conf:.2f} = {cls} ({cls_name}) [{x1},{y1},{x2},{y2}] {conf:.2f}
-YOLO Labeling Tool = YOLO Labeling Tool
-Enter new class: = Введите новый класс:
-Enter new size: = Введите новый размер:
+# --- Заголовок главного окна ---
+YOLO Labeling Tool=Инструмент разметки YOLO
+
+# --- Меню Файл ---
+File=Файл
+Select Model...=Выбрать модель...
+Select Images Directory...=Выбрать папку с изображениями...
+Select Train Directory...=Выбрать папку для обучения...
+Exit=Выход
+
+# --- Меню Вид ---
+View=Вид
+Reset View=Сбросить вид
+Show/Hide Image List=Показать/Скрыть список изображений
+Show/Hide Classes=Показать/Скрыть классы
+Show/Hide Evaluation Summary=Показать/Скрыть сводку оценки
+Show/Hide Error List=Показать/Скрыть список ошибок
+Show/Hide Annotations=Показать/Скрыть аннотации
+Toggle Evaluation Mode=Переключить режим оценки
+
+# --- Меню Действие ---
+Action=Действие
+Manage Classes...=Управление классами...
+
+# --- Меню Действие: Подменю Режим ---
+Mode=Режим
+Box Mode (B)=Режим прямоугольников (B)
+Polygon Mode (P)=Режим полигонов (P)
+
+# --- Меню Действие: Подменю Навигация ---
+Navigate=Навигация
+First Image (Home)=Первое изображение (Home)
+Previous Image (←)=Предыдущее изображение (←)
+Next Image (→)=Следующее изображение (→)
+Last Image (End)=Последнее изображение (End)
+
+# --- Меню Действие: Подменю Аннотации ---
+Annotations=Аннотации
+Reset Current Annotations (R)=Сбросить текущие аннотации (R)
+
+# --- Меню Действие: Подменю Оценка ---
+Evaluation=Оценка
+Set IoU Threshold...=Установить порог IoU...
+Evaluate All Images=Оценить все изображения
+
+# --- Меню Язык ---
+Language=Язык
+
+# --- Диалог управления классами ---
+Class Manager=Управление классами
+Add=Добавить
+Remove=Удалить
+Rename=Переименовать
+Pick Color=Выбрать цвет
+Reset from Model=Сбросить из модели
+OK=ОК
+Cancel=Отмена
+Add Class=Добавить класс
+Enter class name:=Введите название класса:
+Confirm=Подтвердить
+Are you sure you want to remove class {name} (ID: {id})?=Вы уверены, что хотите удалить класс {name} (ID: {id})?
+Rename Class=Переименовать класс
+Enter new class name:=Введите новое название класса:
+No Selection=Нет выбора
+Please select a class first.=Сначала выберите класс.
+Error=Ошибка
+Invalid class item format.=Неверный формат элемента класса.
+Are you sure you want to reset classes from the model? All custom changes will be lost.=Вы уверены, что хотите сбросить классы из модели? Все пользовательские изменения будут потеряны.
+
+# --- Кнопки главной панели инструментов ---
+⏮ First (Home)=⏮ Первое (Home)
+⏪ -10 (PgDn)=⏪ -10 (PgDn)
+◀ Previous (←)=◀ Предыдущее (←)
+Next (→) ▶=Следующее (→) ▶
++10 (PgUp) ⏩=+10 (PgUp) ⏩
+Last (End) ⏭=Последнее (End) ⏭
+Random (Z)=Случайное (Z)
+Reset Annotations (R)=Сбросить аннотации (R)
+Save to Train (N)=Сохранить для обучения (N)
+Hide Annotations (H)=Скрыть аннотации (H)
+Numbers (C)=Номера (C)
+Reset View (V)=Сбросить вид (V)
+
+# --- Метки и текст интерфейса ---
+Mode:=Режим:
+Box=Прямоугольник
+Poly=Полигон
+Threshold:=Порог:
+
+# --- Контекстное меню просмотра изображений ---
+Add Annotation=Добавить аннотацию
+Delete Annotation=Удалить аннотацию
+Change Class=Изменить класс
+
+# --- Сообщения в строке состояния ---
+Model loaded: {path}=Модель загружена: {path}
+Could not load model: {error}=Не удалось загрузить модель: {error}
+Warning=Предупреждение
+No images in folder=Нет изображений в папке
+Error=Ошибка
+Could not load image: {path}=Не удалось загрузить изображение: {path}
+None=Нет
+Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}=Прямоугольник [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Класс: {cls} ({cls_name}) Уверенность: {conf:.2f}
+Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}=Полигон ({num_points} точек) {pos}Класс: {cls} ({cls_name}) Уверенность: {conf:.2f}
+ | TP: {tp}, FP: {fp}, FN: {fn}= | TP: {tp}, FP: {fp}, FN: {fn}
+Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}=Изображение: {current}/{total} | Аннотаций: {visible} (всего: {total_boxes}) | Выбрано: {selected_info} | Режим: {mode}{eval_info}
+No images=Нет изображений
+Error parsing annotation line in {path}: {error}=Ошибка разбора строки аннотации в {path}: {error}
+Error reading annotation file {path}: {error}=Ошибка чтения файла аннотации {path}: {error}
+
+# --- Оценка и ошибки ---
+Set IoU Threshold=Установить порог IoU
+Enter IoU threshold (0.0 - 1.0):=Введите порог IoU (0.0 - 1.0):
+Evaluation completed.=Оценка завершена.
+Success=Успех
+Evaluation of all images completed.=Оценка всех изображений завершена.
+No evaluation results available.=Нет доступных результатов оценки.
+GT=Истина
+TP=TP
+FN=FN
+FP=FP
+Precision=Точность
+Recall=Полнота
+Total=Всего
+False Positive: {cls_name}=Ложное срабатывание: {cls_name}
+False Negative: {cls_name}=Пропущенный объект: {cls_name}
+True Positive: {cls_name}=Истинное срабатывание: {cls_name}
+
+# --- Разное ---
+Show Classes=Показать классы
+Show Evaluation Summary=Показать сводку оценки
+Show Errors List=Показать список ошибок
+Not Found=Не найдено
+Image {basename} not found in the current image list.=Изображение {basename} не найдено в текущем списке изображений.
+Failed to load image: {error}=Не удалось загрузить изображение: {error}

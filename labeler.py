@@ -3,7 +3,6 @@ import sys
 import random
 import shutil
 import json
-import configparser  # For reading .lng files
 from pathlib import Path
 import numpy as np
 import cv2
@@ -13,7 +12,7 @@ from PyQt5.QtWidgets import (
     QSlider, QPushButton, QFileDialog, QAction, QMenu, QLineEdit, QMessageBox,
     QInputDialog, QListWidget, QDockWidget, QListWidgetItem, QMenuBar,
     QColorDialog, QDialog, QButtonGroup, QRadioButton, QSpinBox, QTableWidget, 
-    QTableWidgetItem, QHeaderView, QShortcut, QAbstractItemView
+    QTableWidgetItem, QHeaderView, QShortcut, QAbstractItemView, QComboBox
 )
 from PyQt5.QtCore import Qt, QPoint, QRect, QPointF, QSettings, pyqtSignal
 from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QColor, QKeyEvent, QMouseEvent, QPolygonF, QFontMetrics, QKeySequence
@@ -957,6 +956,73 @@ class ImageViewer(QLabel):
             self.parent.save_annotations_to_file()
         elif (action == self.change_class_action and
               0 <= self.selected_box_idx < len(self.parent.current_boxes)):
+            # Create a custom dialog for class selection
+            dialog = QDialog(self)
+            dialog.setWindowTitle(self.parent.tr("Change Class"))
+            dialog.setModal(True)
+            layout = QVBoxLayout()
+
+            # Create and populate the combo box
+            combo_box = QComboBox()
+            current_class_id = self.parent.current_boxes[self.selected_box_idx].cls
+
+            # Get sorted list of class IDs for consistent order
+            sorted_class_ids = sorted(self.parent.class_names.keys())
+            for class_id in sorted_class_ids:
+                class_name = self.parent.class_names[class_id]
+                color = self.parent.get_class_color(class_id)
+                # Create a styled item
+                item_text = f"{class_id}: {class_name}"
+                combo_box.addItem(item_text)
+                # Set the item's background color
+                combo_box.setItemData(combo_box.count()-1, color, Qt.BackgroundRole)
+                # Optionally, set text color for contrast (if needed)
+                text_color = self.parent.get_contrast_text_color(color)
+                combo_box.setItemData(combo_box.count()-1, text_color, Qt.ForegroundRole)
+
+                # Set current selection
+                if class_id == current_class_id:
+                    combo_box.setCurrentIndex(combo_box.count()-1)
+
+            layout.addWidget(QLabel(self.parent.tr("Select new class:")))
+            layout.addWidget(combo_box)
+
+            # Add OK/Cancel buttons
+            button_box = QHBoxLayout()
+            btn_ok = QPushButton(self.parent.tr("OK"))
+            btn_cancel = QPushButton(self.parent.tr("Cancel"))
+            button_box.addWidget(btn_ok)
+            button_box.addWidget(btn_cancel)
+            layout.addLayout(button_box)
+
+            # Connect buttons
+            def on_ok():
+                selected_index = combo_box.currentIndex()
+                if selected_index >= 0:
+                    # Extract class_id from the item text (e.g., "3: car")
+                    selected_text = combo_box.itemText(selected_index)
+                    try:
+                        new_class_id = int(selected_text.split(":")[0])
+                        self.parent.current_boxes[self.selected_box_idx].cls = new_class_id
+                        if self.evaluation_mode:
+                            self.parent.run_evaluation()
+                        self.update_display()
+                        self.parent.save_annotations_to_file()
+                    except ValueError:
+                        pass # Handle error if parsing fails (shouldn't happen)
+                dialog.accept()
+
+            btn_ok.clicked.connect(on_ok)
+            btn_cancel.clicked.connect(dialog.reject)
+
+            dialog.setLayout(layout)
+
+            # Show dialog
+            if dialog.exec_() == QDialog.Accepted:
+                self.parent.update_status() # Update status bar to reflect new class
+        '''
+        elif (action == self.change_class_action and
+              0 <= self.selected_box_idx < len(self.parent.current_boxes)):
             new_class, ok = QInputDialog.getInt(
                 self, self.parent.tr("Change Class"),
                 self.parent.tr("Enter new class:"),
@@ -969,6 +1035,7 @@ class ImageViewer(QLabel):
                     self.parent.run_evaluation()
                 self.update_display()
                 self.parent.save_annotations_to_file()
+        '''
         # elif action == self.resize_action and 0 <= self.selected_box_idx < len(self.parent.current_boxes):
         #     # Implementation depends on mode
         #     pass
@@ -985,6 +1052,7 @@ class ClassManagerDialog(QDialog):
         from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
         layout = QVBoxLayout()
         self.class_list = QListWidget()
+        self.class_list.currentItemChanged.connect(self.makeBold)
         self.update_class_list()
         layout.addWidget(self.class_list)
         btn_layout = QHBoxLayout()
@@ -997,6 +1065,9 @@ class ClassManagerDialog(QDialog):
         self.btn_rename = QPushButton(self.parent.tr("Rename"))
         self.btn_rename.clicked.connect(self.rename_class)
         btn_layout.addWidget(self.btn_rename)
+        self.btn_pick_color = QPushButton(self.parent.tr("Pick Color"))
+        self.btn_pick_color.clicked.connect(self.pick_color)
+        btn_layout.addWidget(self.btn_pick_color)
         self.btn_reset = QPushButton(self.parent.tr("Reset from Model"))
         self.btn_reset.clicked.connect(self.reset_classes)
         btn_layout.addWidget(self.btn_reset)
@@ -1010,6 +1081,18 @@ class ClassManagerDialog(QDialog):
         ok_cancel_layout.addWidget(self.btn_cancel)
         layout.addLayout(ok_cancel_layout)
         self.setLayout(layout)
+    def makeBold(self, current, previous):
+        if not current: return
+        from PyQt5.QtGui import QFont
+        font = current.font()
+        sz = font.pointSize()
+        font.setBold(True)
+        font.setPointSize(14)
+        current.setFont(font)
+        if previous:
+            font.setBold(False)
+            font.setPointSize(sz)
+            previous.setFont(font)
     def update_class_list(self):
         self.class_list.clear()
         for class_id, class_name in self.parent.class_names.items():
@@ -1057,6 +1140,38 @@ class ClassManagerDialog(QDialog):
                 self.parent.class_names[class_id] = new_name
                 self.update_class_list()
                 self.parent.update_class_list()
+    def pick_color(self):
+        current_item = self.class_list.currentItem()
+        if not current_item:
+            QMessageBox.warning(self, self.parent.tr("No Selection"),
+                              self.parent.tr("Please select a class first."))
+            return
+    
+        # Extract class_id from item text: "ID: Name"
+        try:
+            class_id = int(current_item.text().split(":")[0])
+        except (ValueError, IndexError):
+            QMessageBox.warning(self, self.parent.tr("Error"),
+                              self.parent.tr("Invalid class item format."))
+            return
+    
+        # Get current color
+        current_color = self.parent.get_class_color(class_id)
+    
+        # Open color dialog
+        color = QColorDialog.getColor(
+            initial=current_color,
+            parent=self,
+            title=self.parent.tr(f"Select Color for Class {class_id}")
+        )
+    
+        if color.isValid():
+            # Save to parent's class_colors dict
+            self.parent.class_colors[class_id] = color
+            # Refresh list to update background color
+            self.update_class_list()
+            # Refresh parent UI if needed
+            self.parent.update_class_list()
     def reset_classes(self):
         reply = QMessageBox.question(
             self, self.parent.tr("Confirm"),
@@ -1145,11 +1260,7 @@ class YOLOLabeler(QMainWindow):
         self.errors_list = QListWidget()
         self.errors_list.setFocusPolicy(Qt.NoFocus)
         layout.addWidget(self.errors_list)
-    
-        btn_go = QPushButton(self.tr("Go to Image"))
-        btn_go.setFocusPolicy(Qt.NoFocus)
-        btn_go.clicked.connect(self.on_error_list_go_clicked)
-        layout.addWidget(btn_go)
+        self.errors_list.itemDoubleClicked.connect(self.on_error_list_go_clicked)
     
         container.setLayout(layout)
         self.errors_dock.setWidget(container)
@@ -1199,28 +1310,64 @@ class YOLOLabeler(QMainWindow):
         self.reset_annotations_shortcut.activated.connect(self.reset_annotations)
         
     def load_translations(self):
-        """Loads translations from a .lng file based on the current language."""
+        """Loads translations from a .lng file based on the current language without using configparser."""
         lang_file = f"{self.language}.lng"
         if not os.path.exists(lang_file):
             print(f"Translation file {lang_file} not found. Using keys as fallback.")
             self.translations = {}
             return
-        config = configparser.ConfigParser()
-        config.optionxform = str # Preserve key case
+    
+        self.translations = {}
+        in_ui_section = False
+    
         try:
-            # Specify encoding to handle UTF-8 correctly (ensure file is saved without BOM for ja.lng)
-            config.read(lang_file, encoding='utf-8')
-            if 'UI' in config:
-                self.translations = dict(config['UI'])
-            else:
-                print(f"Section [UI] not found in {lang_file}")
-                self.translations = {}
+            with open(lang_file, 'r', encoding='utf-8') as f:
+                # Handle potential UTF-8 BOM
+                first_line = f.readline()
+                if first_line.startswith('\ufeff'):
+                    first_line = first_line[1:]  # Strip BOM
+                lines = [first_line] + f.readlines()
+    
+            for line_num, line in enumerate(lines, start=1):
+                # Strip leading whitespace to check for comments/sections
+                stripped_line = line.lstrip()  # Remove leading spaces/tabs
+    
+                # Skip empty lines and comments (after leading whitespace)
+                if not stripped_line or stripped_line.startswith('#') or stripped_line.startswith(';'):
+                    continue
+    
+                # Check for section headers
+                if stripped_line.startswith('[') and stripped_line.rstrip().endswith(']'):
+                    section_name = stripped_line[1:stripped_line.index(']')].strip()
+                    in_ui_section = (section_name == 'UI')
+                    continue
+    
+                # Only process lines inside [UI] section
+                if not in_ui_section:
+                    continue
+    
+                # Parse key=value
+                if '=' in line:
+                    key, value = line.split('=', 1)  # Split only on first '='
+                    key = key.strip()
+                    value = value.strip()
+    
+                    # Optional: unquote if needed (e.g., "value" -> value)
+                    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                        value = value[1:-1]
+    
+                    self.translations[key] = value
+                else:
+                    print(f"Warning: Malformed line {line_num} in {lang_file}: {line.strip()}")
+    
         except Exception as e:
             print(f"Error loading translation from {lang_file}: {e}")
             self.translations = {}
+
     def tr(self, key):
         """Translates a key to the current language."""
         return self.translations.get(key, key)
+
     def init_ui(self):
         self.setWindowTitle(self.tr("YOLO Labeling Tool"))
         central_widget = QWidget()
@@ -1286,7 +1433,8 @@ class YOLOLabeler(QMainWindow):
         self.mode_group.addButton(self.mode_poly_rb, 1)
         self.mode_box_rb.setChecked(True)
         self.mode_group.buttonClicked.connect(self.change_annotation_mode)
-        toolbar_layout.addWidget(QLabel(self.tr("Mode:")))
+        self.mode_label = QLabel(self.tr("Mode:"))
+        toolbar_layout.addWidget(self.mode_label)
         toolbar_layout.addWidget(self.mode_box_rb)
         toolbar_layout.addWidget(self.mode_poly_rb)
         # --- End Mode Selection ---
@@ -1346,131 +1494,137 @@ class YOLOLabeler(QMainWindow):
     def create_menus(self):
         """Creates the application menus."""
         menubar = self.menuBar()
-
+    
         # --- File Menu ---
         self.file_menu = menubar.addMenu(self.tr("File"))
-
-        self.select_model_action = QAction(self.tr("Select Model"), self)
+    
+        self.select_model_action = QAction(self.tr("Select Model..."), self)
         self.select_model_action.triggered.connect(self.select_model)
         self.file_menu.addAction(self.select_model_action)
-
-        self.select_images_dir_action = QAction(self.tr("Select Images Directory"), self)
+    
+        self.select_images_dir_action = QAction(self.tr("Select Images Directory..."), self)
         self.select_images_dir_action.triggered.connect(self.select_images_directory)
         self.file_menu.addAction(self.select_images_dir_action)
-
-        self.select_train_dir_action = QAction(self.tr("Select Train Directory"), self)
+    
+        self.select_train_dir_action = QAction(self.tr("Select Train Directory..."), self)
         self.select_train_dir_action.triggered.connect(self.select_train_directory)
         self.file_menu.addAction(self.select_train_dir_action)
-
+    
         self.file_menu.addSeparator()
-
+    
         exit_action = QAction(self.tr("Exit"), self)
+        exit_action.setShortcut(QKeySequence.Quit)
         exit_action.triggered.connect(self.close)
         self.file_menu.addAction(exit_action)
-
+    
         # --- View Menu ---
         self.view_menu = menubar.addMenu(self.tr("View"))
-
-        self.reset_view_action = QAction(self.tr("Reset View (V)"), self)
+    
+        self.reset_view_action = QAction(self.tr("Reset View"), self)
+        self.reset_view_action.setShortcut("V")
         self.reset_view_action.triggered.connect(self.reset_view)
         self.view_menu.addAction(self.reset_view_action)
-
+    
         self.view_menu.addSeparator()
-
-        # These will be connected to the dock's toggleViewAction for automatic state handling
+    
+        # Dock toggles
         if hasattr(self, 'dock') and self.dock:
             self.toggle_list_action = self.dock.toggleViewAction()
             self.toggle_list_action.setText(self.tr("Show/Hide Image List"))
             self.view_menu.addAction(self.toggle_list_action)
-
+    
         if hasattr(self, 'class_dock') and self.class_dock:
             self.toggle_class_list_action = self.class_dock.toggleViewAction()
             self.toggle_class_list_action.setText(self.tr("Show/Hide Classes"))
             self.view_menu.addAction(self.toggle_class_list_action)
-
+    
         if hasattr(self, 'evaluation_dock') and self.evaluation_dock:
             self.toggle_evaluation_summary_action = self.evaluation_dock.toggleViewAction()
             self.toggle_evaluation_summary_action.setText(self.tr("Show/Hide Evaluation Summary"))
             self.view_menu.addAction(self.toggle_evaluation_summary_action)
-
+    
         if hasattr(self, 'errors_dock') and self.errors_dock:
             self.toggle_errors_list_action = self.errors_dock.toggleViewAction()
             self.toggle_errors_list_action.setText(self.tr("Show/Hide Error List"))
             self.view_menu.addAction(self.toggle_errors_list_action)
-
+    
         self.view_menu.addSeparator()
-
-        self.toggle_annotations_action = QAction(self.tr("Show/Hide Annotations (H)"), self)
+    
+        self.toggle_annotations_action = QAction(self.tr("Show/Hide Annotations"), self)
         self.toggle_annotations_action.setCheckable(True)
         self.toggle_annotations_action.setChecked(True)
+        self.toggle_annotations_action.setShortcut("H")
         self.toggle_annotations_action.triggered.connect(self.toggle_annotations)
         self.view_menu.addAction(self.toggle_annotations_action)
-
-        # Placeholder for Annotation Texting Mode (not implemented in provided code)
-        # self.annotation_texting_mode_action = QAction("Annotation Texting Mode", self, checkable=True)
-        # self.annotation_texting_mode_action.triggered.connect(self.toggle_annotation_texting_mode)
-        # self.view_menu.addAction(self.annotation_texting_mode_action)
-
+    
         self.toggle_evaluation_mode_action = QAction(self.tr("Toggle Evaluation Mode"), self)
         self.toggle_evaluation_mode_action.setCheckable(True)
         self.toggle_evaluation_mode_action.setChecked(self.image_viewer.evaluation_mode)
-        self.toggle_evaluation_mode_action.setShortcut(Qt.Key_E)
+        self.toggle_evaluation_mode_action.setShortcut("E")
         self.toggle_evaluation_mode_action.triggered.connect(self.toggle_evaluation_mode)
         self.view_menu.addAction(self.toggle_evaluation_mode_action)
-
+    
         # --- Action Menu ---
         self.action_menu = menubar.addMenu(self.tr("Action"))
-
-        # Mode Switching
-        self.switch_to_box_action = QAction(self.tr("Switch to Box Mode (B)"), self)
+    
+        mode_menu = self.action_menu.addMenu(self.tr("Mode"))
+        mode_menu.setObjectName("mode_menu")
+        self.switch_to_box_action = QAction(self.tr("Box Mode (B)"), self)
         self.switch_to_box_action.triggered.connect(lambda: self.mode_box_rb.setChecked(True))
-        self.action_menu.addAction(self.switch_to_box_action)
-
-        self.switch_to_poly_action = QAction(self.tr("Switch to Poly Mode (P)"), self)
+        self.switch_to_box_action.setShortcut("B")
+        mode_menu.addAction(self.switch_to_box_action)
+    
+        self.switch_to_poly_action = QAction(self.tr("Polygon Mode (P)"), self)
         self.switch_to_poly_action.triggered.connect(lambda: self.mode_poly_rb.setChecked(True))
-        self.action_menu.addAction(self.switch_to_poly_action)
-
-        self.action_menu.addSeparator()
-
-        # Navigation Actions
+        self.switch_to_poly_action.setShortcut("P")
+        mode_menu.addAction(self.switch_to_poly_action)
+    
+        navigate_menu = self.action_menu.addMenu(self.tr("Navigate"))
+        navigate_menu.setObjectName("navigate_menu")
         self.first_image_action = QAction(self.tr("First Image (Home)"), self)
         self.first_image_action.triggered.connect(self.first_image)
-        self.action_menu.addAction(self.first_image_action)
-
+        self.first_image_action.setShortcut(Qt.Key_Home)
+        navigate_menu.addAction(self.first_image_action)
+    
         self.prev_image_action = QAction(self.tr("Previous Image (←)"), self)
         self.prev_image_action.triggered.connect(self.prev_image)
-        self.action_menu.addAction(self.prev_image_action)
-
+        self.prev_image_action.setShortcut(Qt.Key_Left)
+        navigate_menu.addAction(self.prev_image_action)
+    
         self.next_image_action = QAction(self.tr("Next Image (→)"), self)
         self.next_image_action.triggered.connect(self.next_image)
-        self.action_menu.addAction(self.next_image_action)
-
+        self.next_image_action.setShortcut(Qt.Key_Right)
+        navigate_menu.addAction(self.next_image_action)
+    
         self.last_image_action = QAction(self.tr("Last Image (End)"), self)
         self.last_image_action.triggered.connect(self.last_image)
-        self.action_menu.addAction(self.last_image_action)
-
+        self.last_image_action.setShortcut(Qt.Key_End)
+        navigate_menu.addAction(self.last_image_action)
+    
+        annot_menu = self.action_menu.addMenu(self.tr("Annotations"))
+        annot_menu.setObjectName("annot_menu")
+        self.reset_annotations_action = QAction(self.tr("Reset Current Annotations (R)"), self)
+        self.reset_annotations_action.triggered.connect(self.reset_annotations)
+        self.reset_annotations_action.setShortcut("R")
+        annot_menu.addAction(self.reset_annotations_action)
+    
+        # --- NEW: Manage Classes ---
+        self.manage_classes_action = QAction(self.tr("Manage Classes..."), self)
+        self.manage_classes_action.triggered.connect(self.manage_classes)  
+        self.action_menu.addAction(self.manage_classes_action)
+    
         self.action_menu.addSeparator()
-
-
-        # Evaluate Actions
-        self.set_iou_action = QAction(self.tr("Set evaluation IoU threshold"), self)
+    
+        eval_menu = self.action_menu.addMenu(self.tr("Evaluation"))
+        eval_menu.setObjectName("eval_menu")
+        self.set_iou_action = QAction(self.tr("Set IoU Threshold..."), self)
         self.set_iou_action.triggered.connect(self.set_iou_threshold)
-        self.action_menu.addAction(self.set_iou_action)
-
+        eval_menu.addAction(self.set_iou_action)
+    
         self.evaluate_all_action = QAction(self.tr("Evaluate All Images"), self)
         self.evaluate_all_action.triggered.connect(self.evaluate_all_images)
-        self.action_menu.addAction(self.evaluate_all_action)
-
-        self.action_menu.addSeparator()
-
-
-
-        self.action_menu.addSeparator()
-
-        # Reset Annotations
-        self.reset_annotations_action = QAction(self.tr("Reset Annotations (R)"), self)
-        self.reset_annotations_action.triggered.connect(self.reset_annotations)
-        self.action_menu.addAction(self.reset_annotations_action)
+        eval_menu.addAction(self.evaluate_all_action)
+    
         self.create_language_menu()
         
     def set_iou_threshold(self):
@@ -1707,12 +1861,10 @@ class YOLOLabeler(QMainWindow):
         """Handles clicks on cells in the summary table."""
         num_data_rows = len(dialog.summary_data_with_details)
         
-        # РџСЂРѕРІРµСЂСЏРµРј, РєР»РёРєРЅСѓР»Рё Р»Рё РЅР° СЃС‚СЂРѕРєСѓ РґР°РЅРЅС‹С… (РЅРµ РЅР° Total)
         if 0 <= row < num_data_rows:
             class_data = dialog.summary_data_with_details[row]
             class_name = class_data['class'] # "ID: Name"
             
-            # РџСЂРѕРІРµСЂСЏРµРј, РєР»РёРєРЅСѓР»Рё Р»Рё РЅР° СЏС‡РµР№РєСѓ FN (СЃС‚РѕР»Р±РµС† 2) РёР»Рё FP (СЃС‚РѕР»Р±РµС† 3)
             if column == 2 and class_data['fn'] > 0: # FN
                 error_type = 'fn'
                 error_details = class_data['fn_details']
@@ -1886,7 +2038,7 @@ class YOLOLabeler(QMainWindow):
         # Toggle evaluation mode
         self.toggle_evaluation_mode_action = QAction(self.tr("Toggle Evaluation Mode"), self)
         self.toggle_evaluation_mode_action.setCheckable(True)
-        self.toggle_evaluation_mode_action.setShortcut(Qt.Key_E)  # Р”РѕР±Р°РІРёРј С€РѕСЂС‚РєР°С‚
+        self.toggle_evaluation_mode_action.setShortcut(Qt.Key_E)  
         self.toggle_evaluation_mode_action.triggered.connect(self.toggle_evaluation_mode)
         self.view_menu.addAction(self.toggle_evaluation_mode_action)
 
@@ -1916,56 +2068,151 @@ class YOLOLabeler(QMainWindow):
         action = self.sender()
         if action and action.isChecked():
             new_language = action.data()
-            if new_language and new_language != self.language:
-                self.language = new_language
+            if new_language:
                 for code, act in self.language_actions.items():
-                    act.setChecked(code == self.language)
-                self.load_translations()
-                self.update_ui_texts()
-                self.image_viewer.update_display()
-                self.update_status()
-                self.save_config()
+                    act.setChecked(code == new_language)
+                    self.language = new_language
+                    self.load_translations()
+                    self.update_ui_texts()
+                    self.image_viewer.update_display()
+                    self.update_status()
+                    self.save_config()
+
     def update_ui_texts(self):
         """Updates the text of UI elements to the current language."""
         self.setWindowTitle(self.tr("YOLO Labeling Tool"))
-        self.btn_first.setText(self.tr("⮐ First (Home)"))
-        self.btn_prev_10.setText(self.tr("≪ -10 (PgDn)"))
+
+        # --- Main Toolbar Buttons ---
+        self.btn_first.setText(self.tr("⏮ First (Home)"))
+        self.btn_prev_10.setText(self.tr("⏪ -10 (PgDn)"))
         self.btn_prev.setText(self.tr("◀ Previous (←)"))
         self.btn_next.setText(self.tr("Next (→) ▶"))
-        self.btn_next_10.setText(self.tr("+10 (PgUp) ≫"))
-        self.btn_last.setText(self.tr("Last (End) ⇥"))
+        self.btn_next_10.setText(self.tr("+10 (PgUp) ⏩"))
+        self.btn_last.setText(self.tr("Last (End) ⏭"))
         self.btn_random.setText(self.tr("Random (Z)"))
         self.btn_reset.setText(self.tr("Reset Annotations (R)"))
         self.btn_train.setText(self.tr("Save to Train (N)"))
 
+        # --- Toggle Buttons (Text changes based on state) ---
         if self.image_viewer.show_annotations:
             self.btn_toggle_annotations.setText(self.tr("Hide Annotations (H)"))
         else:
             self.btn_toggle_annotations.setText(self.tr("Show Annotations (H)"))
+
         if self.image_viewer.show_class_names:
             self.btn_toggle_class_display.setText(self.tr("Numbers (C)"))
         else:
-            self.btn_toggle_class_display.setText(self.tr("Names (C)"))
+            self.btn_toggle_class_display.setText(self.tr("Names (C)")) # Note: 'Names' might be unused, kept for completeness
+
         self.btn_reset_view.setText(self.tr("Reset View (V)"))
+
+        # --- Labels ---
         self.threshold_label.setText(self.tr("Threshold:"))
+        self.mode_label.setText(self.tr("Mode:"))
+
+        # --- Dock Widgets Titles ---
         self.dock.setWindowTitle(self.tr("Image List"))
         self.class_dock.setWindowTitle(self.tr("Classes"))
-        self.toggle_list_action.setText(self.tr("Show/Hide List"))
-        self.toggle_class_list_action.setText(self.tr("Show Classes"))
-        #self.manage_classes_action.setText(self.tr("Manage Classes"))
-        if hasattr(self, 'language_menu'):
-            self.language_menu.setTitle(self.tr("Language"))
-        # Update mode radio buttons
+        if hasattr(self, 'evaluation_dock') and self.evaluation_dock:
+            self.evaluation_dock.setWindowTitle(self.tr("Evaluation Summary"))
+        if hasattr(self, 'errors_dock') and self.errors_dock:
+            self.errors_dock.setWindowTitle(self.tr("Error List"))
+
+        # --- File Menu ---
+        if hasattr(self, 'file_menu'):
+            self.file_menu.setTitle(self.tr("File"))
+            if hasattr(self, 'select_model_action'):
+                self.select_model_action.setText(self.tr("Select Model..."))
+            if hasattr(self, 'select_images_dir_action'):
+                self.select_images_dir_action.setText(self.tr("Select Images Directory..."))
+            if hasattr(self, 'select_train_dir_action'):
+                self.select_train_dir_action.setText(self.tr("Select Train Directory..."))
+            # Assuming exit_action is created in create_menus
+            if hasattr(self, 'exit_action'):
+                self.exit_action.setText(self.tr("Exit"))
+
+        # --- View Menu ---
+        if hasattr(self, 'view_menu'):
+            self.view_menu.setTitle(self.tr("View"))
+            if hasattr(self, 'reset_view_action'):
+                self.reset_view_action.setText(self.tr("Reset View"))
+
+            # Update dock toggle actions
+            if hasattr(self, 'toggle_list_action') and self.toggle_list_action:
+                self.toggle_list_action.setText(self.tr("Show/Hide Image List"))
+            if hasattr(self, 'toggle_class_list_action') and self.toggle_class_list_action:
+                self.toggle_class_list_action.setText(self.tr("Show/Hide Classes"))
+            if hasattr(self, 'toggle_evaluation_summary_action') and self.toggle_evaluation_summary_action:
+                self.toggle_evaluation_summary_action.setText(self.tr("Show/Hide Evaluation Summary"))
+            if hasattr(self, 'toggle_errors_list_action') and self.toggle_errors_list_action:
+                self.toggle_errors_list_action.setText(self.tr("Show/Hide Error List"))
+
+            # Update annotation toggle in View menu
+            if hasattr(self, 'toggle_annotations_action'):
+                self.toggle_annotations_action.setText(self.tr("Show/Hide Annotations"))
+            if hasattr(self, 'toggle_evaluation_mode_action'):
+                self.toggle_evaluation_mode_action.setText(self.tr("Toggle Evaluation Mode"))
+
+        # --- Action Menu ---
+        if hasattr(self, 'action_menu'):
+            self.action_menu.setTitle(self.tr("Action"))
+
+            # Manage Classes...
+            if hasattr(self, 'manage_classes_action'):
+                self.manage_classes_action.setText(self.tr("Manage Classes..."))
+            # --- Mode Submenu ---
+            mode_menu = self.action_menu.findChild(QMenu, "mode_menu")
+            if mode_menu:
+                mode_menu.setTitle(self.tr("Mode"))
+            # Mode Actions
+            if hasattr(self, 'switch_to_box_action'):
+                self.switch_to_box_action.setText(self.tr("Box Mode (B)"))
+            if hasattr(self, 'switch_to_poly_action'):
+                self.switch_to_poly_action.setText(self.tr("Polygon Mode (P)"))
+
+            # --- Navigate Submenu ---
+            navigate_menu = self.action_menu.findChild(QMenu, "navigate_menu")
+            if navigate_menu:
+                navigate_menu.setTitle(self.tr("Navigate"))
+            # Navigate Actions
+            if hasattr(self, 'first_image_action'):
+                self.first_image_action.setText(self.tr("First Image (Home)"))
+            if hasattr(self, 'prev_image_action'):
+                self.prev_image_action.setText(self.tr("Previous Image (←)"))
+            if hasattr(self, 'next_image_action'):
+                self.next_image_action.setText(self.tr("Next Image (→)"))
+            if hasattr(self, 'last_image_action'):
+                self.last_image_action.setText(self.tr("Last Image (End)"))
+
+            # --- Annotations Submenu ---
+            annot_menu = self.action_menu.findChild(QMenu, "annot_menu")
+            if annot_menu:
+                annot_menu.setTitle(self.tr("Annotations"))
+            # Annotations Actions
+            if hasattr(self, 'reset_annotations_action'):
+                self.reset_annotations_action.setText(self.tr("Reset Current Annotations (R)"))
+
+            # --- Evaluation Submenu ---
+            eval_menu = self.action_menu.findChild(QMenu, "eval_menu")
+            if eval_menu:
+                eval_menu.setTitle(self.tr("Evaluation"))
+            # Evaluation Actions
+            if hasattr(self, 'set_iou_action'):
+                self.set_iou_action.setText(self.tr("Set IoU Threshold..."))
+            if hasattr(self, 'evaluate_all_action'):
+                self.evaluate_all_action.setText(self.tr("Evaluate All Images"))
+
+        # --- Mode Radio Buttons ---
         self.mode_box_rb.setText(self.tr("Box"))
         self.mode_poly_rb.setText(self.tr("Poly"))
-        self.update_class_list()
-        # Update evaluation menu
-        if hasattr(self, 'evaluation_menu'):
-            self.evaluation_menu.setTitle(self.tr("Evaluation"))
-            self.iou_threshold_action.setText(self.tr("Set IoU Threshold"))
-            self.evaluate_all_action.setText(self.tr("Evaluate All Images"))
-            self.evaluation_summary_action.setText(self.tr("Show Evaluation Summary"))
-            self.toggle_evaluation_mode_action.setText(self.tr("Toggle Evaluation Mode"))
+
+        # --- Update Lists ---
+        self.update_class_list() # This updates the class list items
+
+        # --- Language Menu ---
+        if hasattr(self, 'language_menu'):
+            self.language_menu.setTitle(self.tr("Language"))
+
     def toggle_image_list(self):
         if self.dock.isHidden():
             self.dock.show()
@@ -1977,6 +2224,16 @@ class YOLOLabeler(QMainWindow):
             self.update_class_list()
         else:
             self.class_dock.hide()
+    def on_class_selected(self, item):
+        class_id = int(item.text().split(":")[0])
+        self.selected_class_id = class_id
+        if (0 <= self.image_viewer.selected_box_idx < len(self.current_boxes)):
+            self.current_boxes[self.image_viewer.selected_box_idx].cls = class_id
+            self.image_viewer.update_display()
+            self.save_annotations_to_file()
+            self.update_status()
+            if self.image_viewer.evaluation_mode:
+                self.run_evaluation()
     def manage_classes(self):
         dialog = ClassManagerDialog(self)
         dialog.setWindowTitle(self.tr("Class Manager"))
@@ -2027,6 +2284,9 @@ class YOLOLabeler(QMainWindow):
             self.image_viewer.update_display()
             self.save_annotations_to_file()
             self.update_status()
+            if self.image_viewer.evaluation_mode:
+                self.run_evaluation()
+
     def get_selected_class(self):
         return self.selected_class_id
 
@@ -2039,10 +2299,11 @@ class YOLOLabeler(QMainWindow):
             "last_image_index": 0,
             "selected_class_id": 0,
             "class_names": {},
+            "class_colors": {},
             "language": "ru",
             "annotation_mode": MODE_BOX, # Load mode
             "iou_threshold": 0.5  # Load IoU threshold
-        }
+            }
         try:
             if os.path.exists(self.config_file):
                 with open(self.config_file, 'r', encoding='utf-8') as f:
@@ -2061,6 +2322,8 @@ class YOLOLabeler(QMainWindow):
         self.selected_class_id = config.get("selected_class_id", default_config["selected_class_id"])
         self.class_names = config.get("class_names", default_config["class_names"])
         self.class_names = {int(k):v for k,v in self.class_names.items()}
+        saved_colors = config.get("class_colors",  default_config["class_colors"])
+        self.class_colors = {int(k):QColor(v) for k,v in saved_colors.items()}
         self.language = config.get("language", default_config["language"])
         self.annotation_mode = config.get("annotation_mode", default_config["annotation_mode"])
         self.iou_threshold = config.get("iou_threshold", default_config["iou_threshold"])
@@ -2074,6 +2337,7 @@ class YOLOLabeler(QMainWindow):
             "last_image_index": self.current_idx,
             "selected_class_id": self.selected_class_id,
             "class_names": self.class_names,
+            "class_colors": {k: c.name() for k, c in self.class_colors.items()},
             "language": self.language,
             "annotation_mode": self.annotation_mode, # Save mode
             "iou_threshold": self.iou_threshold  # Save IoU threshold
@@ -2481,7 +2745,7 @@ class YOLOLabeler(QMainWindow):
             self.image_viewer.update_display()
             self.save_annotations_to_file()
             self.update_status()
-            self.class_list.setCurrentRow(new_class)#####
+            self.class_list.setCurrentRow(new_class)
         # Example: Ctrl+Up/Down/Left/Right could be used for fine-tuning
         elif (key == Qt.Key_Up and event.modifiers() & Qt.ControlModifier and
               0 <= self.image_viewer.selected_box_idx < len(self.current_boxes)):

@@ -1,55 +1,136 @@
 [UI]
-Open Folder = Open Folder
-⏮️ First (Home) = ⏮️ First (Home)
-⏪ -10 (PgDn) = ⏪ -10 (PgDn)
-◀ Previous (←) = ◀ Previous (←)
-Next (→) ▶ = Next (→) ▶
-+10 (PgUp) ⏩ = +10 (PgUp) ⏩
-Last (End) ⏭️ = Last (End) ⏭️
-Random (Z) = Random (Z)
-Reset Annotations (R) = Reset Annotations (R)
-Save to Train (N) = Save to Train (N)
-Hide Annotations (H) = Hide Annotations (H)
-Show Annotations (H) = Show Annotations (H)
-Numbers (C) = Numbers (C)
-Names (C) = Names (C)
-Reset View (V) = Reset View (V)
-Threshold: = Threshold:
-Image List = Image List
-Classes = Classes
-Show/Hide List = Show/Hide List
-Show Classes = Show Classes
-Manage Classes = Manage Classes
-Language = Language
-Add Box = Add Box
-Delete Box = Delete Box
-Change Class = Change Class
-Resize = Resize
-Class Manager = Class Manager
-Add = Add
-Remove = Remove
-Rename = Rename
-Reset from Model = Reset from Model
-OK = OK
-Cancel = Cancel
-Add Class = Add Class
-Enter class name: = Enter class name:
-Confirm = Confirm
-Are you sure you want to remove class {name} (ID: {id})? = Are you sure you want to remove class {name} (ID: {id})?
-Rename Class = Rename Class
-Enter new class name: = Enter new class name:
-Are you sure you want to reset classes from the model? All custom changes will be lost. = Are you sure you want to reset classes from the model? All custom changes will be lost.
-Error = Error
-Could not load model: {error} = Could not load model: {error}
-Warning = Warning
-No images in folder = No images in folder
-Could not load image: {path} = Could not load image: {path}
-Error reading annotation file {path}: {error} = Error reading annotation file {path}: {error}
-Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} = Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info}
-None = None
-Unknown = Unknown
-Model loaded: {path} = Model loaded: {path}
-Box [{x1},{y1},{x2},{y2}] Class: {cls} ({cls_name}) Conf: {conf:.2f} = {cls} ({cls_name}) [{x1},{y1},{x2},{y2}] {conf:.2f}
-YOLO Labeling Tool = YOLO Labeling Tool
-Enter new class: = Enter new class:
-Enter new size: = Enter new size:
+# --- Main Window Title ---
+YOLO Labeling Tool=YOLO Labeling Tool
+
+# --- File Menu ---
+File=File
+Select Model...=Select Model...
+Select Images Directory...=Select Images Directory...
+Select Train Directory...=Select Train Directory...
+Exit=Exit
+
+# --- View Menu ---
+View=View
+Reset View=Reset View
+Show/Hide Image List=Show/Hide Image List
+Show/Hide Classes=Show/Hide Classes
+Show/Hide Evaluation Summary=Show/Hide Evaluation Summary
+Show/Hide Error List=Show/Hide Error List
+Show/Hide Annotations=Show/Hide Annotations
+Toggle Evaluation Mode=Toggle Evaluation Mode
+
+# --- Action Menu ---
+Action=Action
+Manage Classes...=Manage Classes...
+
+# --- Action Menu: Mode Submenu ---
+Mode=Mode
+Box Mode (B)=Box Mode (B)
+Polygon Mode (P)=Polygon Mode (P)
+
+# --- Action Menu: Navigate Submenu ---
+Navigate=Navigate
+First Image (Home)=First Image (Home)
+Previous Image (←)=Previous Image (←)
+Next Image (→)=Next Image (→)
+Last Image (End)=Last Image (End)
+
+# --- Action Menu: Annotations Submenu ---
+Annotations=Annotations
+Reset Current Annotations (R)=Reset Current Annotations (R)
+
+# --- Action Menu: Evaluation Submenu ---
+Evaluation=Evaluation
+Set IoU Threshold...=Set IoU Threshold...
+Evaluate All Images=Evaluate All Images
+
+# --- Language Menu ---
+Language=Language
+
+# --- Class Manager Dialog ---
+Class Manager=Class Manager
+Add=Add
+Remove=Remove
+Rename=Rename
+Pick Color=Pick Color
+Reset from Model=Reset from Model
+OK=OK
+Cancel=Cancel
+Add Class=Add Class
+Enter class name:=Enter class name:
+Confirm=Confirm
+Are you sure you want to remove class {name} (ID: {id})?=Are you sure you want to remove class {name} (ID: {id})?
+Rename Class=Rename Class
+Enter new class name:=Enter new class name:
+No Selection=No Selection
+Please select a class first.=Please select a class first.
+Error=Error
+Invalid class item format.=Invalid class item format.
+Are you sure you want to reset classes from the model? All custom changes will be lost.=Are you sure you want to reset classes from the model? All custom changes will be lost.
+
+# --- Main Toolbar Buttons ---
+⏮ First (Home)=⏮ First (Home)
+⏪ -10 (PgDn)=⏪ -10 (PgDn)
+◀ Previous (←)=◀ Previous (←)
+Next (→) ▶=Next (→) ▶
++10 (PgUp) ⏩=+10 (PgUp) ⏩
+Last (End) ⏭=Last (End) ⏭
+Random (Z)=Random (Z)
+Reset Annotations (R)=Reset Annotations (R)
+Save to Train (N)=Save to Train (N)
+Hide Annotations (H)=Hide Annotations (H)
+Numbers (C)=Numbers (C)
+Reset View (V)=Reset View (V)
+
+# --- Labels and UI Text ---
+Mode:=Mode:
+Box=Box
+Poly=Poly
+Threshold:=Threshold:
+
+# --- Image Viewer Context Menu ---
+Add Annotation=Add Annotation
+Delete Annotation=Delete Annotation
+Change Class=Change Class
+
+# --- Status Bar Messages ---
+Model loaded: {path}=Model loaded: {path}
+Could not load model: {error}=Could not load model: {error}
+Warning=Warning
+No images in folder=No images in folder
+Error=Error
+Could not load image: {path}=Could not load image: {path}
+None=None
+Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}=Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}
+Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}=Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}
+ | TP: {tp}, FP: {fp}, FN: {fn}= | TP: {tp}, FP: {fp}, FN: {fn}
+Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}=Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}
+No images=No images
+Error parsing annotation line in {path}: {error}=Error parsing annotation line in {path}: {error}
+Error reading annotation file {path}: {error}=Error reading annotation file {path}: {error}
+
+# --- Evaluation and Errors ---
+Set IoU Threshold=Set IoU Threshold
+Enter IoU threshold (0.0 - 1.0):=Enter IoU threshold (0.0 - 1.0):
+Evaluation completed.=Evaluation completed.
+Success=Success
+Evaluation of all images completed.=Evaluation of all images completed.
+No evaluation results available.=No evaluation results available.
+GT=GT
+TP=TP
+FN=FN
+FP=FP
+Precision=Precision
+Recall=Recall
+Total=Total
+False Positive: {cls_name}=False Positive: {cls_name}
+False Negative: {cls_name}=False Negative: {cls_name}
+True Positive: {cls_name}=True Positive: {cls_name}
+
+# --- Miscellaneous UI ---
+Show Classes=Show Classes
+Show Evaluation Summary=Show Evaluation Summary
+Show Errors List=Show Errors List
+Not Found=Not Found
+Image {basename} not found in the current image list.=Image {basename} not found in the current image list.
+Failed to load image: {error}=Failed to load image: {error}

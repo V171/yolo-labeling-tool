@@ -1,55 +1,136 @@
 [UI]
-Open Folder = Ordner öffnen
-⏮️ First (Home) = ⏮️ Erstes (Pos1)
-⏪ -10 (PgDn) = ⏪ -10 (Bild ab)
-◀ Previous (←) = ◀ Vorheriges (←)
-Next (→) ▶ = Nächstes (→) ▶
-+10 (PgUp) ⏩ = +10 (Bild auf) ⏩
-Last (End) ⏭️ = Letztes (Ende) ⏭️
-Random (Z) = Zufällig (Z)
-Reset Annotations (R) = Annotationen zurücksetzen (R)
-Save to Train (N) = In Train speichern (N)
-Hide Annotations (H) = Annotationen ausblenden (H)
-Show Annotations (H) = Annotationen anzeigen (H)
-Numbers (C) = Nummern (C)
-Names (C) = Namen (C)
-Reset View (V) = Ansicht zurücksetzen (V)
-Threshold: = Schwellenwert:
-Image List = Bilderliste
-Classes = Klassen
-Show/Hide List = Liste anzeigen/ausblenden
-Show Classes = Klassen anzeigen
-Manage Classes = Klassen verwalten
-Language = Sprache
-Add Box = Box hinzufügen
-Delete Box = Box löschen
-Change Class = Klasse ändern
-Resize = Größe ändern
-Class Manager = Klassenmanager
-Add = Hinzufügen
-Remove = Entfernen
-Rename = Umbenennen
-Reset from Model = Aus Modell zurücksetzen
-OK = OK
-Cancel = Abbrechen
-Add Class = Klasse hinzufügen
-Enter class name: = Klassennamen eingeben:
-Confirm = Bestätigung
-Are you sure you want to remove class {name} (ID: {id})? = Sind Sie sicher, dass Sie die Klasse {name} (ID: {id}) entfernen möchten?
-Rename Class = Klasse umbenennen
-Enter new class name: = Neuen Klassennamen eingeben:
-Are you sure you want to reset classes from the model? All custom changes will be lost. = Sind Sie sicher, dass Sie die Klassen aus dem Modell zurücksetzen möchten? Alle benutzerdefinierten Änderungen gehen verloren.
-Error = Fehler
-Could not load model: {error} = Modell konnte nicht geladen werden: {error}
-Warning = Warnung
-No images in folder = Keine Bilder im Ordner
-Could not load image: {path} = Bild konnte nicht geladen werden: {path}
-Error reading annotation file {path}: {error} = Fehler beim Lesen der Annotationsdatei {path}: {error}
-Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} = Bild: {current}/{total} | Boxen: {visible} (gesamt: {total_boxes}) | Ausgewählt: {selected_info}
-None = Keine
-Unknown = Unbekannt
-Model loaded: {path} = Modell geladen: {path}
-Box [{x1},{y1},{x2},{y2}] Class: {cls} ({cls_name}) Conf: {conf:.2f} = {cls} ({cls_name}) [{x1},{y1},{x2},{y2}] {conf:.2f}
-YOLO Labeling Tool = YOLO-Beschriftungstool
-Enter new class: = Neue Klasse eingeben:
-Enter new size: = Neue Größe eingeben:
+# --- Hauptfenstertitel ---
+YOLO Labeling Tool=YOLO-Beschriftungstool
+
+# --- Dateimenü ---
+File=Datei
+Select Model...=Modell auswählen...
+Select Images Directory...=Bilderverzeichnis auswählen...
+Select Train Directory...=Trainingsverzeichnis auswählen...
+Exit=Beenden
+
+# --- Ansichtsmenü ---
+View=Ansicht
+Reset View=Ansicht zurücksetzen
+Show/Hide Image List=Bildliste anzeigen/ausblenden
+Show/Hide Classes=Klassen anzeigen/ausblenden
+Show/Hide Evaluation Summary=Auswertungszusammenfassung anzeigen/ausblenden
+Show/Hide Error List=Fehlerliste anzeigen/ausblenden
+Show/Hide Annotations=Annotationen anzeigen/ausblenden
+Toggle Evaluation Mode=Auswertungsmodus umschalten
+
+# --- Aktionsmenü ---
+Action=Aktion
+Manage Classes...=Klassen verwalten...
+
+# --- Aktionsmenü: Modus-Untermenü ---
+Mode=Modus
+Box Mode (B)=Box-Modus (B)
+Polygon Mode (P)=Polygon-Modus (P)
+
+# --- Aktionsmenü: Navigations-Untermenü ---
+Navigate=Navigieren
+First Image (Home)=Erstes Bild (Home)
+Previous Image (←)=Vorheriges Bild (←)
+Next Image (→)=Nächstes Bild (→)
+Last Image (End)=Letztes Bild (End)
+
+# --- Aktionsmenü: Annotations-Untermenü ---
+Annotations=Annotationen
+Reset Current Annotations (R)=Aktuelle Annotationen zurücksetzen (R)
+
+# --- Aktionsmenü: Auswertungs-Untermenü ---
+Evaluation=Auswertung
+Set IoU Threshold...=IoU-Schwellenwert festlegen...
+Evaluate All Images=Alle Bilder auswerten
+
+# --- Sprachmenü ---
+Language=Sprache
+
+# --- Klassen-Manager-Dialog ---
+Class Manager=Klassen-Manager
+Add=Hinzufügen
+Remove=Entfernen
+Rename=Umbenennen
+Pick Color=Farbe auswählen
+Reset from Model=Aus Modell zurücksetzen
+OK=OK
+Cancel=Abbrechen
+Add Class=Klasse hinzufügen
+Enter class name:=Klassenname eingeben:
+Confirm=Bestätigen
+Are you sure you want to remove class {name} (ID: {id})?=Möchten Sie die Klasse {name} (ID: {id}) wirklich entfernen?
+Rename Class=Klasse umbenennen
+Enter new class name:=Neuen Klassennamen eingeben:
+No Selection=Keine Auswahl
+Please select a class first.=Bitte wählen Sie zuerst eine Klasse aus.
+Error=Fehler
+Invalid class item format.=Ungültiges Klassenelementformat.
+Are you sure you want to reset classes from the model? All custom changes will be lost.=Möchten Sie die Klassen wirklich aus dem Modell zurücksetzen? Alle benutzerdefinierten Änderungen gehen verloren.
+
+# --- Hauptwerkzeugleisten-Schaltflächen ---
+⏮ First (Home)=⏮ Erste (Home)
+⏪ -10 (PgDn)=⏪ -10 (PgDn)
+◀ Previous (←)=◀ Vorherige (←)
+Next (→) ▶=Nächste (→) ▶
++10 (PgUp) ⏩=+10 (PgUp) ⏩
+Last (End) ⏭=Letzte (End) ⏭
+Random (Z)=Zufällig (Z)
+Reset Annotations (R)=Annotationen zurücksetzen (R)
+Save to Train (N)=Für Training speichern (N)
+Hide Annotations (H)=Annotationen ausblenden (H)
+Numbers (C)=Nummern (C)
+Reset View (V)=Ansicht zurücksetzen (V)
+
+# --- Beschriftungen und UI-Texte ---
+Mode:=Modus:
+Box=Box
+Poly=Polygon
+Threshold:=Schwelle:
+
+# --- Kontextmenü des Bildbetrachters ---
+Add Annotation=Annotation hinzufügen
+Delete Annotation=Annotation löschen
+Change Class=Klasse ändern
+
+# --- Statusleisten-Nachrichten ---
+Model loaded: {path}=Modell geladen: {path}
+Could not load model: {error}=Modell konnte nicht geladen werden: {error}
+Warning=Warnung
+No images in folder=Keine Bilder im Ordner
+Error=Fehler
+Could not load image: {path}=Bild konnte nicht geladen werden: {path}
+None=Keine
+Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Class: {cls} ({cls_name}) Conf: {conf:.2f}=Box [{x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f}] Klasse: {cls} ({cls_name}) Konfidenz: {conf:.2f}
+Poly ({num_points} pts) {pos}Class: {cls} ({cls_name}) Conf: {conf:.2f}=Polygon ({num_points} Punkte) {pos}Klasse: {cls} ({cls_name}) Konfidenz: {conf:.2f}
+ | TP: {tp}, FP: {fp}, FN: {fn}= | TP: {tp}, FP: {fp}, FN: {fn}
+Image: {current}/{total} | Boxes: {visible} (total: {total_boxes}) | Selected: {selected_info} | Mode: {mode}{eval_info}=Bild: {current}/{total} | Boxen: {visible} (gesamt: {total_boxes}) | Ausgewählt: {selected_info} | Modus: {mode}{eval_info}
+No images=Keine Bilder
+Error parsing annotation line in {path}: {error}=Fehler beim Parsen der Anmerkungszeile in {path}: {error}
+Error reading annotation file {path}: {error}=Fehler beim Lesen der Anmerkungsdatei {path}: {error}
+
+# --- Auswertung und Fehler ---
+Set IoU Threshold=IoU-Schwellenwert festlegen
+Enter IoU threshold (0.0 - 1.0):=IoU-Schwellenwert eingeben (0.0 - 1.0):
+Evaluation completed.=Auswertung abgeschlossen.
+Success=Erfolg
+Evaluation of all images completed.=Auswertung aller Bilder abgeschlossen.
+No evaluation results available.=Keine Auswertungsergebnisse verfügbar.
+GT=Wahrheit
+TP=Richtig Positiv
+FN=Falsch Negativ
+FP=Falsch Positiv
+Precision=Präzision
+Recall=Recall
+Total=Gesamt
+False Positive: {cls_name}=Falsch positiv: {cls_name}
+False Negative: {cls_name}=Falsch negativ: {cls_name}
+True Positive: {cls_name}=Richtig positiv: {cls_name}
+
+# --- Verschiedenes UI ---
+Show Classes=Klassen anzeigen
+Show Evaluation Summary=Auswertungszusammenfassung anzeigen
+Show Errors List=Fehlerliste anzeigen
+Not Found=Nicht gefunden
+Image {basename} not found in the current image list.=Bild {basename} wurde in der aktuellen Bildliste nicht gefunden.
+Failed to load image: {error}=Bild konnte nicht geladen werden: {error}
