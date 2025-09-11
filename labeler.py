@@ -760,6 +760,7 @@ class ImageViewer(QLabel):
             # Handle image moving
             self.drag_start = event.pos()
             self.dragging = False
+            self.selected_box_idx=-1
         elif event.button() == Qt.RightButton:
             # Right-click to finish polygon or show context menu
             if (self.drawing_box and self.parent.annotation_mode == MODE_POLY
